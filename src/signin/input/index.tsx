@@ -12,9 +12,16 @@ interface InputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error: string | boolean;
+  focusOutFunction?: () => void;
 }
 
-const Input = ({ id, inputType, value, onChange, error }: InputProps) => {
+const Input = ({
+  inputType,
+  value,
+  onChange,
+  error,
+  focusOutFunction,
+}: InputProps) => {
   const [isPwVisible, setIsPwVisible] = useState(false);
 
   if (inputType === "email") {
@@ -29,6 +36,7 @@ const Input = ({ id, inputType, value, onChange, error }: InputProps) => {
           placeholder="이메일 입력"
           value={value}
           onChange={onChange}
+          onBlur={focusOutFunction}
         />
         {typeof error === "string" && error.length > 0 && (
           <span className={S.errorText}>{error}</span>
@@ -54,6 +62,7 @@ const Input = ({ id, inputType, value, onChange, error }: InputProps) => {
             objectFit="cover"
             fill
             onClick={() => setIsPwVisible(!isPwVisible)}
+            onBlur={focusOutFunction}
           />
         </div>
       </div>

@@ -30,10 +30,6 @@ const SigninForm = () => {
     }
   };
 
-  const handleFocusOut = () => {
-    alert("focus out");
-  };
-
   return (
     <form className={S.container} onSubmit={handleSubmit}>
       <label htmlFor="email" className={S.label}>
