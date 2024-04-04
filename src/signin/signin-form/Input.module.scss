@@ -1,0 +1,52 @@
+@import "@/styles/global.scss";
+
+.input {
+  display: flex;
+  width: 40rem;
+  padding: 1.8rem 1.5rem;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 0.8rem;
+  border: 0.1rem solid $color-gray20;
+  background-color: $color-white;
+}
+
+.input::placeholder {
+  color: $color-gray60;
+}
+
+.input:focus {
+  border: 0.1rem solid $color-primary;
+  background-color: $color-white;
+}
+
+.pwContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: -1.6rem;
+}
+
+.eyeContainer {
+  position: relative;
+  top: -3.5rem;
+  left: -2rem;
+
+  width: 1.6rem;
+  height: 1.6rem;
+}
+.eye {
+  cursor: pointer;
+}
+
+.error {
+  border: 0.1rem solid $color-red;
+}
+
+.errorText {
+  color: $color-red;
+
+  font-size: 1.4rem;
+  font-weight: 400;
+}

@@ -24,7 +24,7 @@ const NavigationBar = ({ profile }: NavigationBarProps) => {
         {profile ? (
           <Profile profile={profile} />
         ) : (
-          <Link href="/login">
+          <Link href="/signin">
             <Cta>
               <span className={S.cta}>로그인</span>
             </Cta>
