@@ -7,8 +7,12 @@
 }
 
 .image {
+  position: relative;
   width: 2.8rem;
   height: 2.8rem;
+}
+
+.profile {
   border-radius: 50%;
 }
 

@@ -12,11 +12,15 @@ interface ProfileProps {
 const Profile = ({ profile }: ProfileProps) => {
   return (
     <div className={S.container}>
-      <Image
-        className={S.image}
-        src={profile.imageSource}
-        alt="프로필 이미지"
-      />
+      <div className={S.image}>
+        <Image
+          className={S.profile}
+          src={profile.imageSource}
+          alt="프로필 이미지"
+          fill
+          objectFit="cover"
+        />
+      </div>
       <span className={S.email}>{profile.email}</span>
     </div>
   );
