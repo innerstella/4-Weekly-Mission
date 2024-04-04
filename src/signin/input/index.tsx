@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import EYE_OFF from "@/public/assets/signin/eye-off.svg";
 import EYE_ON from "@/public/assets/signin/eye-on.svg";
@@ -7,22 +7,33 @@ import EYE_ON from "@/public/assets/signin/eye-on.svg";
 import S from "./Input.module.scss";
 
 interface InputProps {
+  id: string;
   inputType: "email" | "password";
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error: string | boolean;
 }
 
-const Input = ({ inputType }: InputProps) => {
+const Input = ({ id, inputType, value, onChange, error }: InputProps) => {
   const [isPwVisible, setIsPwVisible] = useState(false);
-
-  const passwordRef = useRef<HTMLInputElement | null>(null);
 
   if (inputType === "email") {
     return (
-      <input
-        className={S.input}
-        required
-        type="email"
-        placeholder="내용 입력"
-      />
+      <>
+        <input
+          className={`${S.input} ${
+            typeof error === "string" && error.length > 0 && S.error
+          }`}
+          required
+          type="email"
+          placeholder="이메일 입력"
+          value={value}
+          onChange={onChange}
+        />
+        {typeof error === "string" && error.length > 0 && (
+          <span className={S.errorText}>{error}</span>
+        )}
+      </>
     );
   } else if (inputType === "password") {
     return (
@@ -31,8 +42,9 @@ const Input = ({ inputType }: InputProps) => {
           className={S.input}
           required
           type={isPwVisible ? "text" : "password"}
-          placeholder="내용 입력"
-          ref={passwordRef}
+          placeholder="비밀번호 입력"
+          value={value}
+          onChange={onChange}
         />
         <div className={S.eyeContainer}>
           <Image
