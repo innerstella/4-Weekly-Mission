@@ -1,7 +1,10 @@
+import Head from "next/head";
+
 export default function Home() {
   return (
     <>
-      <p>dd</p>
+      <Head>Linkbrary</Head>
+      <main>landing page</main>
     </>
   );
 }
