@@ -42,6 +42,15 @@ const SigninForm = () => {
     }
   };
 
+  // 비밀번호 입력창 focus out 시 비밀번호 유효성 검사
+  const handlePasswordFocusOut = () => {
+    if (password.length === 0) {
+      setPasswordError("비밀번호를 입력해주세요.");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   return (
     <form className={S.container} onSubmit={handleSubmit}>
       <label htmlFor="email" className={S.label}>
@@ -64,6 +73,7 @@ const SigninForm = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         error={passwordError}
+        focusOutFunction={handlePasswordFocusOut}
       />
       <SigninButton />
     </form>

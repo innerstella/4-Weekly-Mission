@@ -45,27 +45,35 @@ const Input = ({
     );
   } else if (inputType === "password") {
     return (
-      <div className={S.pwContainer}>
-        <input
-          className={S.input}
-          required
-          type={isPwVisible ? "text" : "password"}
-          placeholder="비밀번호를 입력해주세요."
-          value={value}
-          onChange={onChange}
-        />
-        <div className={S.eyeContainer}>
-          <Image
-            className={S.eye}
-            src={isPwVisible ? EYE_ON : EYE_OFF}
-            alt="비밀번호 보기"
-            objectFit="cover"
-            fill
-            onClick={() => setIsPwVisible(!isPwVisible)}
+      <>
+        <div className={S.pwContainer}>
+          <input
+            className={`${S.input} ${
+              typeof error === "string" && error.length > 0 && S.error
+            }`}
+            required
+            type={isPwVisible ? "text" : "password"}
+            placeholder="비밀번호를 입력해주세요."
+            value={value}
+            onChange={onChange}
             onBlur={focusOutFunction}
           />
+          <div className={S.eyeContainer}>
+            <Image
+              className={S.eye}
+              src={isPwVisible ? EYE_ON : EYE_OFF}
+              alt="비밀번호 보기"
+              objectFit="cover"
+              fill
+              onClick={() => setIsPwVisible(!isPwVisible)}
+              onBlur={focusOutFunction}
+            />
+          </div>
         </div>
-      </div>
+        {typeof error === "string" && error.length > 0 && (
+          <span className={S.errorText}>{error}</span>
+        )}
+      </>
     );
   }
 };
