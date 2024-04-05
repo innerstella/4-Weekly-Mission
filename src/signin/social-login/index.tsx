@@ -1,8 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 
-import GOOGLE_IMAGE from "@/public/assets/signin/google.png";
-import KAKAO_IMAGE from "@/public/assets/signin/kakao.svg";
-
+import { SOCIAL_LOGIN_LIST } from "./constants";
 import S from "./SocialLogin.module.scss";
 
 const SocialLogin = () => {
@@ -10,12 +9,13 @@ const SocialLogin = () => {
     <div className={S.container}>
       <span className={S.text}>소셜 로그인</span>
       <div className={S.sns}>
-        <div className={S.google}>
-          <Image src={GOOGLE_IMAGE} alt="google login" />
-        </div>
-        <div className={S.kakao}>
-          <Image src={KAKAO_IMAGE} alt="kakao login" />
-        </div>
+        {SOCIAL_LOGIN_LIST.map((sns) => {
+          return (
+            <Link href={sns.url} key={sns.name} className={S[sns.name]}>
+              <Image src={sns.image} alt={`${sns.name} login`} />
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
