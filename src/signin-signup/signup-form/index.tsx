@@ -1,45 +1,21 @@
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { validateEmail, validatePassword } from "@/src/utils/validation";
 
-import handleLogin from "./handleLogin";
-import S from "./SigninForm.module.scss";
 import Input from "../input";
-import SigninButton from "../signin-button";
+import SignButton from "../sign-button";
+import S from "../signin-form/SignForm.module.scss";
 
-const SigninForm = () => {
-  const router = useRouter();
-
+const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
 
   const [emailError, setEmailError] = useState<string | boolean>("");
   const [passwordError, setPasswordError] = useState<string | boolean>("");
-
-  // 로그인 버튼 클릭 시 이메일, 비밀번호 유효성 검사 후 로그인 API 호출
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const validateEmailResult = validateEmail(email);
-    const validatePasswordResult = validatePassword(password);
-
-    setEmailError(validateEmailResult);
-    setPasswordError(validatePasswordResult);
-
-    if (validateEmailResult !== true || validatePasswordResult !== true) {
-      return;
-    } else {
-      handleLogin({ email, password }).then((res) => {
-        if (res === true) {
-          router.push("/folder");
-        } else {
-          setEmailError("이메일을 확인해주세요.");
-          setPasswordError("비밀번호를 확인해주세요.");
-        }
-      });
-    }
-  };
+  const [passwordCheckError, setPasswordCheckError] = useState<
+    string | boolean
+  >("");
 
   // 이메일 입력창 focus out 시 이메일 유효성 검사
   const handleEmailFocusOut = () => {
@@ -56,13 +32,24 @@ const SigninForm = () => {
   const handlePasswordFocusOut = () => {
     if (password.length === 0) {
       setPasswordError("비밀번호를 입력해주세요.");
+    } else if (validatePassword(password) === false) {
+      setPasswordError("비밀번호는 영문, 숫자 조합 8자 이상 입력해 주세요.");
     } else {
       setPasswordError("");
     }
   };
 
+  // 비밀번호 확인 유효성 검사
+  const handlePasswordCheck = () => {
+    if (password !== passwordCheck) {
+      setPasswordCheckError("비밀번호가 일치하지 않아요.");
+    } else {
+      setPasswordCheckError("");
+    }
+  };
+
   return (
-    <form className={S.container} onSubmit={handleSubmit}>
+    <form className={S.container}>
       <label htmlFor="email" className={S.label}>
         이메일
       </label>
@@ -84,10 +71,22 @@ const SigninForm = () => {
         onChange={(e) => setPassword(e.target.value)}
         error={passwordError}
         focusOutFunction={handlePasswordFocusOut}
+        placeholder="영문, 숫자를 조합해 8자 이상 입력해 주세요."
       />
-      <SigninButton />
+      <label htmlFor="password-check" className={S.label}>
+        비밀번호 확인
+      </label>
+      <Input
+        id="password-check"
+        inputType="passwordCheck"
+        value={passwordCheck}
+        onChange={(e) => setPasswordCheck(e.target.value)}
+        error={passwordCheckError}
+        focusOutFunction={handlePasswordCheck}
+      />
+      <SignButton currPage="signup" />
     </form>
   );
 };
 
-export default SigninForm;
+export default SignupForm;

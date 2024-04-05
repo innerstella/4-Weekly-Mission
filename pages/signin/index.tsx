@@ -1,14 +1,14 @@
-import ChangeSignInUp from "@/src/signin/change-signin-up";
-import Layout from "@/src/signin/layout";
-import SigninForm from "@/src/signin/signin-form";
-import SocialLogin from "@/src/signin/social-login";
+import ChangeSignInUp from "@/src/signin-signup/change-signin-up";
+import Layout from "@/src/signin-signup/layout";
+import SigninForm from "@/src/signin-signup/signin-form";
+import SocialLogin from "@/src/signin-signup/social-login";
 
 export default function SigninPage() {
   return (
     <Layout>
       <ChangeSignInUp currPage="signin" />
       <SigninForm />
-      <SocialLogin />
+      <SocialLogin currPage="signin" />
     </Layout>
   );
 }

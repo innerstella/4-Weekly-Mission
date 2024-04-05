@@ -8,11 +8,12 @@ import S from "./Input.module.scss";
 
 interface InputProps {
   id: string;
-  inputType: "email" | "password";
+  inputType: "email" | "password" | "passwordCheck";
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error: string | boolean;
   focusOutFunction?: () => void;
+  placeholder?: string;
 }
 
 const Input = ({
@@ -21,6 +22,7 @@ const Input = ({
   onChange,
   error,
   focusOutFunction,
+  placeholder,
 }: InputProps) => {
   const [isPwVisible, setIsPwVisible] = useState(false);
 
@@ -53,7 +55,39 @@ const Input = ({
             }`}
             required
             type={isPwVisible ? "text" : "password"}
-            placeholder="비밀번호를 입력해주세요."
+            placeholder={placeholder || "비밀번호를 입력해주세요."}
+            value={value}
+            onChange={onChange}
+            onBlur={focusOutFunction}
+          />
+          <div className={S.eyeContainer}>
+            <Image
+              className={S.eye}
+              src={isPwVisible ? EYE_ON : EYE_OFF}
+              alt="비밀번호 보기"
+              objectFit="cover"
+              fill
+              onClick={() => setIsPwVisible(!isPwVisible)}
+              onBlur={focusOutFunction}
+            />
+          </div>
+        </div>
+        {typeof error === "string" && error.length > 0 && (
+          <span className={S.errorText}>{error}</span>
+        )}
+      </>
+    );
+  } else if (inputType === "passwordCheck") {
+    return (
+      <>
+        <div className={S.pwContainer}>
+          <input
+            className={`${S.input} ${
+              typeof error === "string" && error.length > 0 && S.error
+            }`}
+            required
+            type={isPwVisible ? "text" : "password"}
+            placeholder="비밀번호와 일치하는 값을 입력해 주세요."
             value={value}
             onChange={onChange}
             onBlur={focusOutFunction}
