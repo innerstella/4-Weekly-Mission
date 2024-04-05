@@ -1,12 +1,16 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { validateEmail, validatePassword } from "@/src/utils/validation";
 
+import handleLogin from "./handleLogin";
 import S from "./SigninForm.module.scss";
 import Input from "../input";
 import SigninButton from "../signin-button";
 
 const SigninForm = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -26,8 +30,14 @@ const SigninForm = () => {
     if (validateEmailResult !== true || validatePasswordResult !== true) {
       return;
     } else {
-      // TODO: 로그인 API 호출 (week15?)
-      alert("로그인 성공");
+      handleLogin({ email, password }).then((res) => {
+        if (res === true) {
+          router.push("/folder");
+        } else {
+          setEmailError("이메일을 확인해주세요.");
+          setPasswordError("비밀번호를 확인해주세요.");
+        }
+      });
     }
   };
 
