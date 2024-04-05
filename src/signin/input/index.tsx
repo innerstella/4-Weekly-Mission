@@ -33,7 +33,7 @@ const Input = ({
           }`}
           required
           type="email"
-          placeholder="이메일 입력"
+          placeholder="이메일을 입력해주세요."
           value={value}
           onChange={onChange}
           onBlur={focusOutFunction}
@@ -50,7 +50,7 @@ const Input = ({
           className={S.input}
           required
           type={isPwVisible ? "text" : "password"}
-          placeholder="비밀번호 입력"
+          placeholder="비밀번호를 입력해주세요."
           value={value}
           onChange={onChange}
         />
