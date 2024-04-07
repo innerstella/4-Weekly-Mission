@@ -1,5 +1,7 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 
+import axiosInstance from "@/lib/axios";
 import {
   isEmailUnique,
   validateEmail,
@@ -11,6 +13,8 @@ import SignButton from "../sign-button";
 import S from "../signin-form/SignForm.module.scss";
 
 const SignupForm = () => {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -54,8 +58,25 @@ const SignupForm = () => {
     }
   };
 
+  // 회원가입
+  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (
+      emailError === "" &&
+      passwordError === "" &&
+      passwordCheckError === ""
+    ) {
+      axiosInstance
+        .post("sign-up", { email: email, password: password })
+        .then(() => {
+          router.push("/folder");
+        });
+    }
+  };
+
   return (
-    <form className={S.container}>
+    <form className={S.container} onSubmit={(e) => handleSignUp(e)}>
       <label htmlFor="email" className={S.label}>
         이메일
       </label>
