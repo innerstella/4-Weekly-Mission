@@ -17,6 +17,26 @@ const SigninForm = () => {
   const [emailError, setEmailError] = useState<string | boolean>("");
   const [passwordError, setPasswordError] = useState<string | boolean>("");
 
+  // 이메일 입력창 focus out 시 이메일 유효성 검사
+  const handleEmailFocusOut = () => {
+    if (email.length === 0) {
+      setEmailError("이메일을 입력해주세요.");
+    } else if (validateEmail(email) !== true) {
+      setEmailError("올바른 이메일 주소가 아닙니다.");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  // 비밀번호 입력창 focus out 시 비밀번호 유효성 검사
+  const handlePasswordFocusOut = () => {
+    if (password.length === 0) {
+      setPasswordError("비밀번호를 입력해주세요.");
+    } else {
+      setPasswordError("");
+    }
+  };
+
   // 로그인 버튼 클릭 시 이메일, 비밀번호 유효성 검사 후 로그인 API 호출
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,29 +60,8 @@ const SigninForm = () => {
       });
     }
   };
-
-  // 이메일 입력창 focus out 시 이메일 유효성 검사
-  const handleEmailFocusOut = () => {
-    if (email.length === 0) {
-      setEmailError("이메일을 입력해주세요.");
-    } else if (validateEmail(email) !== true) {
-      setEmailError("올바른 이메일 주소가 아닙니다.");
-    } else {
-      setEmailError("");
-    }
-  };
-
-  // 비밀번호 입력창 focus out 시 비밀번호 유효성 검사
-  const handlePasswordFocusOut = () => {
-    if (password.length === 0) {
-      setPasswordError("비밀번호를 입력해주세요.");
-    } else {
-      setPasswordError("");
-    }
-  };
-
   return (
-    <form className={S.container} onSubmit={handleSubmit}>
+    <form className={S.container} onSubmit={(e) => handleSubmit(e)}>
       <label htmlFor="email" className={S.label}>
         이메일
       </label>

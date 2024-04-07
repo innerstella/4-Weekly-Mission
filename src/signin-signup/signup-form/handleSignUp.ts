@@ -1,16 +1,16 @@
 import axiosInstance from "@/lib/axios";
 
-interface handleLoginProps {
+interface handleSignUpProps {
   email: string;
   password: string;
 }
 
-const handleLogin = async ({
+const handleSignUp = async ({
   email,
   password,
-}: handleLoginProps): Promise<boolean> => {
+}: handleSignUpProps): Promise<boolean> => {
   return await axiosInstance
-    .post("/sign-in", {
+    .post("/sign-up", {
       email: email,
       password: password,
     })
@@ -22,4 +22,4 @@ const handleLogin = async ({
     });
 };
 
-export default handleLogin;
+export default handleSignUp;

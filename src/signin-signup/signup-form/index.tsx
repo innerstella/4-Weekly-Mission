@@ -8,6 +8,7 @@ import {
   validatePassword,
 } from "@/src/utils/validation";
 
+import handleSignUp from "./handleSignUp";
 import Input from "../input";
 import SignButton from "../sign-button";
 import S from "../signin-form/SignForm.module.scss";
@@ -59,7 +60,7 @@ const SignupForm = () => {
   };
 
   // 회원가입
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (
@@ -67,16 +68,16 @@ const SignupForm = () => {
       passwordError === "" &&
       passwordCheckError === ""
     ) {
-      axiosInstance
-        .post("sign-up", { email: email, password: password })
-        .then(() => {
+      handleSignUp({ email, password }).then((res) => {
+        if (res === true) {
           router.push("/folder");
-        });
+        }
+      });
     }
   };
 
   return (
-    <form className={S.container} onSubmit={(e) => handleSignUp(e)}>
+    <form className={S.container} onSubmit={(e) => handleSubmit(e)}>
       <label htmlFor="email" className={S.label}>
         이메일
       </label>
