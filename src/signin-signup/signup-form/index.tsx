@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-import { validateEmail, validatePassword } from "@/src/utils/validation";
+import {
+  isEmailUnique,
+  validateEmail,
+  validatePassword,
+} from "@/src/utils/validation";
 
 import Input from "../input";
 import SignButton from "../sign-button";
@@ -18,11 +22,13 @@ const SignupForm = () => {
   >("");
 
   // 이메일 입력창 focus out 시 이메일 유효성 검사
-  const handleEmailFocusOut = () => {
+  const handleEmailFocusOut = async () => {
     if (email.length === 0) {
       setEmailError("이메일을 입력해주세요.");
     } else if (validateEmail(email) !== true) {
       setEmailError("올바른 이메일 주소가 아닙니다.");
+    } else if ((await isEmailUnique(email)) === false) {
+      setEmailError("이미 사용 중인 이메일입니다.");
     } else {
       setEmailError("");
     }
