@@ -14,7 +14,8 @@ const handleLogin = async ({
       email: email,
       password: password,
     })
-    .then(() => {
+    .then((res) => {
+      localStorage.setItem("accessToken", res.data.data.accessToken);
       return true;
     })
     .catch((err) => {
