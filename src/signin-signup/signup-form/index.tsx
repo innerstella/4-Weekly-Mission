@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
-import axiosInstance from "@/lib/axios";
 import {
   isEmailUnique,
   validateEmail,
@@ -9,64 +9,47 @@ import {
 } from "@/src/utils/validation";
 
 import handleSignUp from "./handleSignUp";
-import Input from "../input";
+import SignUpInput from "../input/signUpInput";
 import SignButton from "../sign-button";
 import S from "../signin-form/SignForm.module.scss";
+
+export interface SignUpFormValues {
+  email: string;
+  password: string;
+  passwordCheck: string;
+}
 
 const SignupForm = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignUpFormValues>({ mode: "onBlur" });
 
-  const [emailError, setEmailError] = useState<string | boolean>("");
-  const [passwordError, setPasswordError] = useState<string | boolean>("");
-  const [passwordCheckError, setPasswordCheckError] = useState<
-    string | boolean
-  >("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordCheckError, setPasswordCheckError] = useState(false);
 
-  // 이메일 입력창 focus out 시 이메일 유효성 검사
-  const handleEmailFocusOut = async () => {
-    if (email.length === 0) {
-      setEmailError("이메일을 입력해주세요.");
-    } else if (validateEmail(email) !== true) {
-      setEmailError("올바른 이메일 주소가 아닙니다.");
-    } else if ((await isEmailUnique(email)) === false) {
-      setEmailError("이미 사용 중인 이메일입니다.");
-    } else {
-      setEmailError("");
-    }
-  };
-
-  // 비밀번호 입력창 focus out 시 비밀번호 유효성 검사
-  const handlePasswordFocusOut = () => {
-    if (password.length === 0) {
-      setPasswordError("비밀번호를 입력해주세요.");
-    } else if (validatePassword(password) === false) {
-      setPasswordError("비밀번호는 영문, 숫자 조합 8자 이상 입력해 주세요.");
-    } else {
-      setPasswordError("");
-    }
-  };
-
-  // 비밀번호 확인 유효성 검사
-  const handlePasswordCheck = () => {
-    if (password !== passwordCheck) {
-      setPasswordCheckError("비밀번호가 일치하지 않아요.");
-    } else {
-      setPasswordCheckError("");
-    }
-  };
+  useEffect(() => {
+    errors.email ? setEmailError(true) : setEmailError(false);
+    errors.password ? setPasswordError(true) : setPasswordError(false);
+    errors.passwordCheck
+      ? setPasswordCheckError(true)
+      : setPasswordCheckError(false);
+  }, [errors.email, errors.password, errors.passwordCheck]);
 
   // 회원가입
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitSignUp: SubmitHandler<SignUpFormValues> = (data) => {
+    const email = data.email;
+    const password = data.password;
 
     if (
-      emailError === "" &&
-      passwordError === "" &&
-      passwordCheckError === ""
+      emailError === false &&
+      passwordError === false &&
+      passwordCheckError === false
     ) {
       handleSignUp({ email, password }).then((res) => {
         if (res === true) {
@@ -77,41 +60,42 @@ const SignupForm = () => {
   };
 
   return (
-    <form className={S.container} onSubmit={(e) => handleSubmit(e)}>
+    <form className={S.container} onSubmit={handleSubmit(submitSignUp)}>
       <label htmlFor="email" className={S.label}>
         이메일
       </label>
-      <Input
+      <SignUpInput
         id="email"
         inputType="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         error={emailError}
-        focusOutFunction={handleEmailFocusOut}
+        register={register}
       />
+      {errors.email && (
+        <span className={S.errorText}>{errors.email?.message}</span>
+      )}
       <label htmlFor="password" className={S.label}>
         비밀번호
       </label>
-      <Input
+      <SignUpInput
         id="password"
         inputType="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
         error={passwordError}
-        focusOutFunction={handlePasswordFocusOut}
-        placeholder="영문, 숫자를 조합해 8자 이상 입력해 주세요."
+        register={register}
       />
-      <label htmlFor="password-check" className={S.label}>
+      {errors.password && (
+        <span className={S.errorText}>{errors.password?.message}</span>
+      )}
+      <label htmlFor="passwordCheck" className={S.label}>
         비밀번호 확인
       </label>
-      <Input
-        id="password-check"
+      <SignUpInput
+        id="passwordCheck"
         inputType="passwordCheck"
-        value={passwordCheck}
-        onChange={(e) => setPasswordCheck(e.target.value)}
         error={passwordCheckError}
-        focusOutFunction={handlePasswordCheck}
+        register={register}
+        password={watch("password")}
       />
+      <span className={S.errorText}>{errors.passwordCheck?.message}</span>
       <SignButton currPage="signup" />
     </form>
   );

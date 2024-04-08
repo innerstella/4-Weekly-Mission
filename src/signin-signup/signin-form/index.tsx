@@ -1,89 +1,87 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
-
-import { validateEmail, validatePassword } from "@/src/utils/validation";
+import { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 import handleLogin from "./handleLogin";
 import S from "./SignForm.module.scss";
-import Input from "../input";
+import SignInInput from "../input/signInInput";
 import SignButton from "../sign-button";
+
+export interface SignInFormValues {
+  email: string;
+  password: string;
+}
 
 const SigninForm = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormValues>({ mode: "onBlur" });
 
-  const [emailError, setEmailError] = useState<string | boolean>("");
-  const [passwordError, setPasswordError] = useState<string | boolean>("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [signinError, setSigninError] = useState(false);
 
-  // 이메일 입력창 focus out 시 이메일 유효성 검사
-  const handleEmailFocusOut = () => {
-    if (email.length === 0) {
-      setEmailError("이메일을 입력해주세요.");
-    } else if (validateEmail(email) !== true) {
-      setEmailError("올바른 이메일 주소가 아닙니다.");
-    } else {
-      setEmailError("");
-    }
-  };
+  useEffect(() => {
+    setSigninError(false);
 
-  // 비밀번호 입력창 focus out 시 비밀번호 유효성 검사
-  const handlePasswordFocusOut = () => {
-    if (password.length === 0) {
-      setPasswordError("비밀번호를 입력해주세요.");
-    } else {
-      setPasswordError("");
-    }
-  };
+    errors.email ? setEmailError(true) : setEmailError(false);
+    errors.password ? setPasswordError(true) : setPasswordError(false);
+  }, [errors.email, errors.password]);
 
   // 로그인 버튼 클릭 시 이메일, 비밀번호 유효성 검사 후 로그인 API 호출
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitSignIn: SubmitHandler<SignInFormValues> = (data) => {
+    const email = data.email;
+    const password = data.password;
 
-    const validateEmailResult = validateEmail(email);
-    const validatePasswordResult = validatePassword(password);
-
-    setEmailError(validateEmailResult);
-    setPasswordError(validatePasswordResult);
-
-    if (validateEmailResult !== true || validatePasswordResult !== true) {
-      return;
-    } else {
+    if (emailError === false && passwordError === false) {
       handleLogin({ email, password }).then((res) => {
         if (res === true) {
           router.push("/folder");
         } else {
-          setEmailError("이메일을 확인해주세요.");
-          setPasswordError("비밀번호를 확인해주세요.");
+          setSigninError(true);
+          setEmailError(true);
+          setPasswordError(true);
         }
       });
     }
   };
+
   return (
-    <form className={S.container} onSubmit={(e) => handleSubmit(e)}>
+    <form className={S.container} onSubmit={handleSubmit(submitSignIn)}>
       <label htmlFor="email" className={S.label}>
         이메일
       </label>
-      <Input
+      <SignInInput
         id="email"
         inputType="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
         error={emailError}
-        focusOutFunction={handleEmailFocusOut}
+        register={register}
       />
+      {signinError && (
+        <span className={S.errorText}>이메일을 확인해주세요.</span>
+      )}
+      {errors.email && (
+        <span className={S.errorText}>{errors.email?.message}</span>
+      )}
       <label htmlFor="password" className={S.label}>
         비밀번호
       </label>
-      <Input
+      <SignInInput
         id="password"
         inputType="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
         error={passwordError}
-        focusOutFunction={handlePasswordFocusOut}
+        register={register}
       />
+      {signinError && (
+        <span className={S.errorText}>비밀번호를 확인헤주세요.</span>
+      )}
+      {errors.password && (
+        <span className={S.errorText}>{errors.password?.message}</span>
+      )}
       <SignButton currPage="signin" />
     </form>
   );
